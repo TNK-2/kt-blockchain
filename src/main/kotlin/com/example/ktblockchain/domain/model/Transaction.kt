@@ -1,3 +1,7 @@
 package com.example.ktblockchain.domain.model
 
-class Transaction
+data class Transaction(
+  val senderBlockChainAddress: String,
+  val recipientBlockChainAddress: String,
+  val value: Double
+)
