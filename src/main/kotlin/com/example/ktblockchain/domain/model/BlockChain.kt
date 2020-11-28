@@ -1,5 +1,9 @@
 package com.example.ktblockchain.domain.model
 
+import com.example.ktblockchain.config.AppConf
+import com.example.ktblockchain.utils.HashUtil
+import java.security.MessageDigest
+
 class BlockChain(
   private var transactionPool: MutableList<Transaction> = mutableListOf(),
   private val chain: MutableList<Block> = mutableListOf()
@@ -25,7 +29,7 @@ class BlockChain(
   }
 
   fun getBlockHash(block: Block): String =
-    block.hashCode().toString()
+    HashUtil.getSha256Hash(block.toString())
 
   fun getLastBlockHash(): String =
     this.getBlockHash(this.chain.last())
@@ -42,6 +46,35 @@ class BlockChain(
         value = value
       )
     )
+  }
+
+  private fun validProof(
+    transactions: List<Transaction>,
+    previousHash: String,
+    nonce: Int,
+    difficulty: Int = AppConf.MINING_DIFFICULTY,
+    timestamp: Long
+  ): Boolean {
+    val guessHash = this.getBlockHash(
+      block = Block(
+        timestamp = timestamp,
+        previousHash = previousHash,
+        nonce = nonce,
+        transactions = transactions
+      )
+    )
+    return guessHash.substring(0, difficulty) == "0".repeat(difficulty)
+  }
+
+  fun proofOfWork(): Int {
+    val transactions = this.transactionPool.toList()
+    val previousHash = this.getLastBlockHash()
+    val timestamp = System.currentTimeMillis()
+    var nonce = 0;
+    while (!this.validProof(transactions = transactions, previousHash = previousHash, nonce = nonce, timestamp = timestamp)) {
+      nonce++
+    }
+    return nonce
   }
 
   fun print(chains: List<Block> = this.chain) {

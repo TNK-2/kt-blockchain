@@ -1,6 +1,8 @@
 package com.example.ktblockchain
 
+import com.example.ktblockchain.domain.model.Block
 import com.example.ktblockchain.domain.model.BlockChain
+import com.example.ktblockchain.domain.model.Transaction
 
 fun main(args: Array<String>) {
   println("Hello blockchain!!")
@@ -11,7 +13,7 @@ fun main(args: Array<String>) {
     recipientBlockChainAddress = "B",
     value = 1.0
   )
-  blockchain.createBlock(nonce = 5)
+  blockchain.createBlock(nonce = blockchain.proofOfWork())
 
   blockchain.addTransaction(
     senderBlockChainAddress = "C",
@@ -23,6 +25,6 @@ fun main(args: Array<String>) {
     recipientBlockChainAddress = "Y",
     value = 3.5
   )
-  blockchain.createBlock(nonce = 2)
+  blockchain.createBlock(nonce = blockchain.proofOfWork())
   blockchain.print()
 }
