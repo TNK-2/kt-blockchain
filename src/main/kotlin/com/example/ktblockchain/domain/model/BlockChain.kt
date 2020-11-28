@@ -1,7 +1,6 @@
 package com.example.ktblockchain.domain.model
 
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+import java.sql.Timestamp
 
 class BlockChain(
   val transactionPool: MutableList<Transaction> = mutableListOf(),
@@ -15,7 +14,7 @@ class BlockChain(
   fun createBlock(
     nonce: Int,
     previousHash: String = this.getLastBlockHash(),
-    timestamp: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+    timestamp: Long = System.currentTimeMillis()
   ) {
     val block = Block(
       timestamp = timestamp,
