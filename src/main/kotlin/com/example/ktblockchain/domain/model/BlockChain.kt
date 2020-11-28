@@ -2,18 +2,23 @@ package com.example.ktblockchain.domain.model
 
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.utils.HashUtil
-import java.security.MessageDigest
+import com.example.ktblockchain.utils.KtLog
 
 class BlockChain(
   private var transactionPool: MutableList<Transaction> = mutableListOf(),
-  private val chain: MutableList<Block> = mutableListOf()
+  private val chain: MutableList<Block> = mutableListOf(),
+  private val blockChainAddress: String
 ) {
 
   init {
     this.createBlock(0, "init hash")
   }
 
-  fun createBlock(
+  companion object {
+    val logger = KtLog.logger
+  }
+
+  private fun createBlock(
     nonce: Int,
     previousHash: String = this.getLastBlockHash(),
     timestamp: Long = System.currentTimeMillis()
@@ -66,7 +71,7 @@ class BlockChain(
     return guessHash.substring(0, difficulty) == "0".repeat(difficulty)
   }
 
-  fun proofOfWork(): Int {
+  private fun proofOfWork(): Int {
     val transactions = this.transactionPool.toList()
     val previousHash = this.getLastBlockHash()
     val timestamp = System.currentTimeMillis()
@@ -75,6 +80,18 @@ class BlockChain(
       nonce++
     }
     return nonce
+  }
+
+  fun mining(): Boolean {
+    this.addTransaction(
+      senderBlockChainAddress = AppConf.MINING_SENDER,
+      recipientBlockChainAddress = this.blockChainAddress,
+      value = AppConf.MINING_REWARD
+    )
+    val nonce = this.proofOfWork()
+    this.createBlock(nonce = nonce)
+    logger.info("{ \"action\" : \"mining\", \"status\" = \"success\" }")
+    return true
   }
 
   fun print(chains: List<Block> = this.chain) {

@@ -1,19 +1,19 @@
 package com.example.ktblockchain
 
-import com.example.ktblockchain.domain.model.Block
 import com.example.ktblockchain.domain.model.BlockChain
-import com.example.ktblockchain.domain.model.Transaction
 
 fun main(args: Array<String>) {
   println("Hello blockchain!!")
-  val blockchain = BlockChain()
+  val blockchain = BlockChain(
+    blockChainAddress = "my_blockchain_address"
+  )
 
   blockchain.addTransaction(
     senderBlockChainAddress = "A",
     recipientBlockChainAddress = "B",
     value = 1.0
   )
-  blockchain.createBlock(nonce = blockchain.proofOfWork())
+  blockchain.mining()
 
   blockchain.addTransaction(
     senderBlockChainAddress = "C",
@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
     recipientBlockChainAddress = "Y",
     value = 3.5
   )
-  blockchain.createBlock(nonce = blockchain.proofOfWork())
+  blockchain.mining()
+
   blockchain.print()
 }
