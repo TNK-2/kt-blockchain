@@ -53,6 +53,21 @@ class BlockChain(
     )
   }
 
+  fun calculateTotalAmount(blockChainAddress: String): Double {
+    var totalAmount = 0.0
+    this.chain.forEach { block ->
+      block.transactions.forEach { transaction ->
+        if (blockChainAddress == transaction.recipientBlockChainAddress) {
+          totalAmount += transaction.value
+        }
+        if (blockChainAddress == transaction.senderBlockChainAddress) {
+          totalAmount -= transaction.value
+        }
+      }
+    }
+    return totalAmount
+  }
+
   private fun validProof(
     transactions: List<Transaction>,
     previousHash: String,

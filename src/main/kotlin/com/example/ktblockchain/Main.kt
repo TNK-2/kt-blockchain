@@ -28,4 +28,7 @@ fun main(args: Array<String>) {
   blockchain.mining()
 
   blockchain.print()
+  println("my total amount : " + blockchain.calculateTotalAmount("my_blockchain_address"))
+  println("C total amount : " + blockchain.calculateTotalAmount("C"))
+  println("D total amount : " + blockchain.calculateTotalAmount("D"))
 }
