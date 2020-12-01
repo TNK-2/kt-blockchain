@@ -1,6 +1,7 @@
 package com.example.ktblockchain
 
 import com.example.ktblockchain.domain.model.BlockChain
+import com.example.ktblockchain.domain.model.Wallet
 
 fun main(args: Array<String>) {
   println("Hello blockchain!!")
@@ -31,4 +32,10 @@ fun main(args: Array<String>) {
   println("my total amount : " + blockchain.calculateTotalAmount("my_blockchain_address"))
   println("C total amount : " + blockchain.calculateTotalAmount("C"))
   println("D total amount : " + blockchain.calculateTotalAmount("D"))
+
+  val wallet = Wallet()
+  println("--------wallet---------")
+  println("privatekey : " + wallet.privateKey)
+  println("publickey : " + wallet.publicKey)
+  println("blockchain addr : " + wallet.blockChainAddress)
 }
