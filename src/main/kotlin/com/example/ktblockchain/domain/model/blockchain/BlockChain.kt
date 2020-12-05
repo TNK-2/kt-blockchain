@@ -139,7 +139,13 @@ class BlockChain(
   }
 
   fun print(chains: List<Block> = this.chain) {
-    println("***************************")
+    println("**Current Transaction*****************")
+    transactionPool.forEachIndexed { i, transaction ->
+      println("------print transaction : $i ------")
+      println("transaction : $transaction")
+    }
+    println()
+    println("**Blocks Info*************************")
     chains.forEachIndexed { i, block ->
       println("------print chain : $i ------")
       println("timestamp : " + block.timestamp)
@@ -148,5 +154,6 @@ class BlockChain(
       println("transactions : " + block.transactions)
       println("block hash : " + this.getBlockHash(block))
     }
+    println()
   }
 }

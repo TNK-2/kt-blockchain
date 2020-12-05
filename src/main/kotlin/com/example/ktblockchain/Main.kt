@@ -26,6 +26,11 @@ fun main(args: Array<String>) {
     hexSignature = transaction.generateSignature()
   )
   println(isSuccess)
+  println(blockChain.print())
+  blockChain.mining()
+  println(blockChain.print())
+  println("A total amount : " + blockChain.calculateTotalAmount(walletA.blockChainAddress))
+  println("B total amount : " + blockChain.calculateTotalAmount(walletB.blockChainAddress))
 }
 
 fun _main(args: Array<String>) {
