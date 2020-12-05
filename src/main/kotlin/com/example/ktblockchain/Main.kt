@@ -1,6 +1,7 @@
 package com.example.ktblockchain
 
 import com.example.ktblockchain.domain.model.blockchain.BlockChain
+import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.model.wallet.Wallet
 
 fun main(args: Array<String>) {
@@ -38,4 +39,12 @@ fun main(args: Array<String>) {
   println("privatekey : " + wallet.privateKey)
   println("publickey : " + wallet.publicKey)
   println("blockchain addr : " + wallet.blockChainAddress)
+  val transaction = Transaction(
+    senderBlockChainAddress = wallet.blockChainAddress,
+    recipientBlockChainAddress = "B",
+    senderPrivateKey = wallet.privateKey,
+    senderPublicKey = wallet.publicKey,
+    value = 1.0
+  )
+  println("signature : " + transaction.generateSignature())
 }
