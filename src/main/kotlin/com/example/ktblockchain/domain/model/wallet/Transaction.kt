@@ -2,12 +2,10 @@ package com.example.ktblockchain.domain.model.wallet
 
 import com.example.ktblockchain.domain.model.blockchain.Transaction
 import com.example.ktblockchain.utils.HashUtil
-import com.example.ktblockchain.utils.decodeBase58
-import java.security.KeyFactory
+import org.apache.tomcat.util.buf.HexUtils
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.Signature
-import java.security.spec.PKCS8EncodedKeySpec
 
 class Transaction(
   val senderPrivateKey: PrivateKey,
@@ -27,6 +25,6 @@ class Transaction(
     val signature = Signature.getInstance("SHA256withECDSA")
     signature.initSign(this.senderPrivateKey)
     signature.update(message.toByteArray())
-    return signature.sign().toString()
+    return HexUtils.toHexString(signature.sign())
   }
 }
