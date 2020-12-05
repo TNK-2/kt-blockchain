@@ -49,6 +49,11 @@ class BlockChain(
     senderPublicKey: PublicKey? = null,
     hexSignature: String? = null
   ): Boolean {
+//    if (this.calculateTotalAmount(senderBlockChainAddress) < value) {
+//      logger.error("残高が足りません...")
+//      return false
+//    }
+
     val transaction = Transaction(
       senderBlockChainAddress = senderBlockChainAddress,
       recipientBlockChainAddress = recipientBlockChainAddress,
@@ -56,6 +61,7 @@ class BlockChain(
     )
     if (senderBlockChainAddress == AppConf.MINING_SENDER) {
       transactionPool.add(transaction)
+      logger.info("マイニングによるトランザクションが追加されました")
       return true
     }
     if (this.verifyTransactionSignature(
@@ -64,8 +70,10 @@ class BlockChain(
         transaction = transaction)
     ) {
       transactionPool.add(transaction)
+      logger.info("送金によるトランザクションが追加されました")
       return true
     }
+    logger.error("トランザクションが失敗しました...")
     return false
   }
 
