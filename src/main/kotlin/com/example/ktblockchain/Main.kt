@@ -1,7 +1,7 @@
 package com.example.ktblockchain
 
-import com.example.ktblockchain.domain.model.BlockChain
-import com.example.ktblockchain.domain.model.Wallet
+import com.example.ktblockchain.domain.model.blockchain.BlockChain
+import com.example.ktblockchain.domain.model.wallet.Wallet
 
 fun main(args: Array<String>) {
   println("Hello blockchain!!")

@@ -1,4 +1,4 @@
-package com.example.ktblockchain.domain.model
+package com.example.ktblockchain.domain.model.wallet
 
 import com.example.ktblockchain.utils.HashUtil
 import com.example.ktblockchain.utils.encodeToBase58String

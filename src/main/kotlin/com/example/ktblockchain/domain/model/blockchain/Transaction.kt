@@ -1,4 +1,4 @@
-package com.example.ktblockchain.domain.model
+package com.example.ktblockchain.domain.model.blockchain
 
 data class Transaction(
   val senderBlockChainAddress: String,

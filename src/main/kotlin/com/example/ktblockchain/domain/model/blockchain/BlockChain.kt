@@ -1,4 +1,4 @@
-package com.example.ktblockchain.domain.model
+package com.example.ktblockchain.domain.model.blockchain
 
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.utils.HashUtil
