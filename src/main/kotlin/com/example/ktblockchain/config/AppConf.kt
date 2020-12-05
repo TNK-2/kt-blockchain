@@ -6,4 +6,5 @@ object AppConf {
   const val MINING_SENDER = "THE BLOCKCHAIN"
   const val MINING_REWARD = 1.0
   const val SIGNATURE_ALGO = "SHA256withECDSA"
+  const val PORT = "8080"
 }

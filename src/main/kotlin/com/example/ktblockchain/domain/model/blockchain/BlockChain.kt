@@ -9,8 +9,9 @@ import java.security.Signature
 
 class BlockChain(
   private var transactionPool: MutableList<Transaction> = mutableListOf(),
-  private val chain: MutableList<Block> = mutableListOf(),
-  private val blockChainAddress: String
+  val chain: MutableList<Block> = mutableListOf(),
+  private val blockChainAddress: String,
+  private val port: String = AppConf.PORT
 ) {
 
   init {
@@ -18,7 +19,7 @@ class BlockChain(
   }
 
   companion object {
-    val logger = KtLog.logger
+    private val logger = KtLog.logger
   }
 
   private fun createBlock(
