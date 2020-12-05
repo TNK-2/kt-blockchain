@@ -3,6 +3,9 @@ package com.example.ktblockchain.domain.model.blockchain
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.utils.HashUtil
 import com.example.ktblockchain.utils.KtLog
+import org.apache.tomcat.util.buf.HexUtils
+import java.security.PublicKey
+import java.security.Signature
 
 class BlockChain(
   private var transactionPool: MutableList<Transaction> = mutableListOf(),
@@ -42,15 +45,28 @@ class BlockChain(
   fun addTransaction(
     senderBlockChainAddress: String,
     recipientBlockChainAddress: String,
-    value: Double
-  ) {
-    transactionPool.add(
-      Transaction(
-        senderBlockChainAddress = senderBlockChainAddress,
-        recipientBlockChainAddress = recipientBlockChainAddress,
-        value = value
-      )
+    value: Double,
+    senderPublicKey: PublicKey? = null,
+    hexSignature: String? = null
+  ): Boolean {
+    val transaction = Transaction(
+      senderBlockChainAddress = senderBlockChainAddress,
+      recipientBlockChainAddress = recipientBlockChainAddress,
+      value = value
     )
+    if (senderBlockChainAddress == AppConf.MINING_SENDER) {
+      transactionPool.add(transaction)
+      return true
+    }
+    if (this.verifyTransactionSignature(
+        senderPublicKey = senderPublicKey!!,
+        hexSignature = hexSignature!!,
+        transaction = transaction)
+    ) {
+      transactionPool.add(transaction)
+      return true
+    }
+    return false
   }
 
   fun calculateTotalAmount(blockChainAddress: String): Double {
@@ -66,6 +82,19 @@ class BlockChain(
       }
     }
     return totalAmount
+  }
+
+  private fun verifyTransactionSignature(
+    senderPublicKey: PublicKey,
+    hexSignature: String,
+    transaction: Transaction
+  ): Boolean {
+    val message = HashUtil.getSha256Hash(transaction.toString())
+
+    val sig = Signature.getInstance(AppConf.SIGNATURE_ALGO)
+    sig.initVerify(senderPublicKey)
+    sig.update(message.toByteArray())
+    return sig.verify(HexUtils.fromHexString(hexSignature))
   }
 
   private fun validProof(

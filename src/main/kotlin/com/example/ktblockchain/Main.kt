@@ -5,6 +5,30 @@ import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.model.wallet.Wallet
 
 fun main(args: Array<String>) {
+  val walletA = Wallet()
+  val walletB = Wallet()
+  val walletM = Wallet()
+  val transaction = Transaction(
+    senderPublicKey = walletA.publicKey,
+    senderPrivateKey = walletA.privateKey,
+    senderBlockChainAddress = walletA.blockChainAddress,
+    recipientBlockChainAddress = walletB.blockChainAddress,
+    value = 1.0
+  )
+
+  // Blockchain Node
+  val blockChain = BlockChain(blockChainAddress = walletM.blockChainAddress)
+  val isSuccess = blockChain.addTransaction(
+    senderBlockChainAddress = walletA.blockChainAddress,
+    recipientBlockChainAddress = walletB.blockChainAddress,
+    value = transaction.value,
+    senderPublicKey = walletA.publicKey,
+    hexSignature = transaction.generateSignature()
+  )
+  println(isSuccess)
+}
+
+fun _main(args: Array<String>) {
   println("Hello blockchain!!")
   val blockchain = BlockChain(
     blockChainAddress = "my_blockchain_address"

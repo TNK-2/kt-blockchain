@@ -1,5 +1,6 @@
 package com.example.ktblockchain.domain.model.wallet
 
+import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.domain.model.blockchain.Transaction
 import com.example.ktblockchain.utils.HashUtil
 import org.apache.tomcat.util.buf.HexUtils
@@ -22,7 +23,7 @@ class Transaction(
       value = this.value
     )
     val message = HashUtil.getSha256Hash(transaction.toString())
-    val signature = Signature.getInstance("SHA256withECDSA")
+    val signature = Signature.getInstance(AppConf.SIGNATURE_ALGO)
     signature.initSign(this.senderPrivateKey)
     signature.update(message.toByteArray())
     return HexUtils.toHexString(signature.sign())
