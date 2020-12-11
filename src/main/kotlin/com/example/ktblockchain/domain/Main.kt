@@ -1,10 +1,10 @@
-package com.example.ktblockchain
+package com.example.ktblockchain.domain
 
 import com.example.ktblockchain.domain.model.blockchain.BlockChain
 import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.model.wallet.Wallet
 
-fun main(args: Array<String>) {
+fun __main(args: Array<String>) {
   val walletA = Wallet()
   val walletB = Wallet()
   val walletM = Wallet()
