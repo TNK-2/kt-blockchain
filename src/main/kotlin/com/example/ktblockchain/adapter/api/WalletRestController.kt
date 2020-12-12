@@ -27,9 +27,16 @@ class WalletRestController(
     @RequestParam recipientBlockChainAddress: String,
     @RequestParam value: Double,
     @RequestParam senderPublicKey: String,
-    @RequestParam signature: String
-  ) {
-
+    @RequestParam senderPrivateKey: String
+  ): String {
+    walletService.createTransaction(
+      senderBlockChainAddress = senderBlockChainAddress,
+      senderPrivateKey = senderPrivateKey,
+      senderPublicKey = senderPublicKey,
+      value = value,
+      recipientBlockChainAddress = recipientBlockChainAddress
+    )
+    return "{ \"message\" = \"success\" }"
   }
 
 }
