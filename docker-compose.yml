@@ -1,0 +1,16 @@
+version: '3.6'
+services:
+  kt-blockchain:
+    container_name: "kt-blockchain"
+    working_dir: /var/app/
+    image: adoptopenjdk/openjdk11:alpine
+    tty: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./:/var/app:cached"
+      - "gradle-dependencies:/root/.gradle"
+    command: ./gradlew bootRun # --debug-jvm
+volumes:
+  gradle-dependencies:
+    driver: local
