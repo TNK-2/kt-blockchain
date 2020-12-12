@@ -8,7 +8,7 @@ import java.security.PublicKey
 import java.security.Signature
 
 class BlockChain(
-  private var transactionPool: MutableList<Transaction> = mutableListOf(),
+  var transactionPool: MutableList<Transaction> = mutableListOf(),
   val chain: MutableList<Block> = mutableListOf(),
   private val blockChainAddress: String,
   private val port: String = AppConf.PORT
@@ -76,6 +76,24 @@ class BlockChain(
     }
     logger.error("トランザクションが失敗しました...")
     return false
+  }
+
+  fun createTransaction(
+    senderBlockChainAddress: String,
+    recipientBlockChainAddress: String,
+    value: Double,
+    senderPublicKey: PublicKey,
+    hexSignature: String
+  ): Boolean {
+    // TODO sync
+
+    return addTransaction(
+      senderBlockChainAddress = senderBlockChainAddress,
+      recipientBlockChainAddress = recipientBlockChainAddress,
+      value = value,
+      senderPublicKey = senderPublicKey,
+      hexSignature = hexSignature
+    )
   }
 
   fun calculateTotalAmount(blockChainAddress: String): Double {
