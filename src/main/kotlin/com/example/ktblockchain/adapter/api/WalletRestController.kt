@@ -3,17 +3,16 @@ package com.example.ktblockchain.adapter.api
 import com.example.ktblockchain.usecase.WalletService
 import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/wallet")
 class WalletRestController(
   private val walletService: WalletService
 ) {
 
-  @PostMapping
-  fun create(): CreateWalletResponse {
+  @PostMapping("/wallet")
+  fun createWallet(): CreateWalletResponse {
     val newMyWallet = walletService.createWallet()
     return CreateWalletResponse(
       privateKey = ObjectSerializer.serialize(newMyWallet.privateKey),
@@ -21,4 +20,16 @@ class WalletRestController(
       blockChainAddress = newMyWallet.blockChainAddress
     )
   }
+
+  @PostMapping("/transaction")
+  fun createTransaction(
+    @RequestParam senderBlockChainAddress: String,
+    @RequestParam recipientBlockChainAddress: String,
+    @RequestParam value: Double,
+    @RequestParam senderPublicKey: String,
+    @RequestParam signature: String
+  ) {
+
+  }
+
 }
