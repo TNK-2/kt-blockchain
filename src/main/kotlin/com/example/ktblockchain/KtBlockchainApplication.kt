@@ -7,13 +7,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
-class KtBlockchainApplication {
-	fun main(args: Array<String>) {
-		runApplication<KtBlockchainApplication>(*args)
-	}
-
+class KtBlockchainApplication{
 	@Bean
 	fun restTemplate(builder: RestTemplateBuilder): RestTemplate
 		= builder.build()
 }
 
+fun main(args: Array<String>) {
+	runApplication<KtBlockchainApplication>(*args)
+}

@@ -1,4 +1,5 @@
 version: '3.6'
+
 services:
   kt-blockchain:
     container_name: "kt-blockchain"
@@ -6,11 +7,30 @@ services:
     image: adoptopenjdk/openjdk11:alpine
     tty: true
     ports:
+      - "5000:8080"
+    volumes:
+      - "./:/var/app:cached"
+      - "kt-blockchain-gradle-dependencies:/root/.gradle"
+      - "kt-blockchain-gradle:/var/app/.gradle/"
+    command: ./gradlew bootRun # --debug-jvm
+
+  kt-wallet:
+    container_name: "kt-wallet"
+    working_dir: /var/app/
+    image: adoptopenjdk/openjdk11:alpine
+    tty: true
+    ports:
       - "8080:8080"
     volumes:
       - "./:/var/app:cached"
-      - "gradle-dependencies:/root/.gradle"
+      - "kt-wallet-gradle-dependencies:/root/.gradle"
+      - "kt-wallet-gradle:/var/app/.gradle/"
     command: ./gradlew bootRun # --debug-jvm
+
 volumes:
-  gradle-dependencies:
+  kt-blockchain-gradle-dependencies:
     driver: local
+  kt-blockchain-gradle:
+  kt-wallet-gradle-dependencies:
+    driver: local
+  kt-wallet-gradle:
