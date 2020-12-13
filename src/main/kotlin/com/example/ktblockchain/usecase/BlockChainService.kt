@@ -26,7 +26,7 @@ class BlockChainService(
     hexSignature: String
   ) {
     val blockChain = blockChainRepository.findOne()
-      ?: throw IllegalStateException("ブロックチェーンが作成されていません")
+      ?: blockChainRepository.store(blockChain = blockChainFactory.new())
 
     blockChain.createTransaction(
       senderBlockChainAddress = senderBlockChainAddress,
@@ -35,5 +35,11 @@ class BlockChainService(
       value = value,
       recipientBlockChainAddress = recipientBlockChainAddress
     )
+  }
+
+  fun mine():Boolean {
+    val blockChain = blockChainRepository.findOne()
+      ?: blockChainRepository.store(blockChain = blockChainFactory.new())
+    return blockChain.mining()
   }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class BlockChainRestController(
   private val blockChainService: BlockChainService
-){
+) {
 
   @GetMapping("/chain")
   fun getChain(): List<Block> {
@@ -39,4 +39,13 @@ class BlockChainRestController(
     )
     return CreateBlockTransactionResponse(message = "Success")
   }
+
+  @GetMapping("/mine")
+  fun mine(): MineResponse =
+    if (blockChainService.mine()) {
+      MineResponse(message = "Success")
+    } else {
+      MineResponse(message = "Failed")
+    }
+
 }

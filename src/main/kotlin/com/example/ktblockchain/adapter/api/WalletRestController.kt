@@ -25,7 +25,7 @@ class WalletRestController(
   @PostMapping("/transaction")
   fun createTransaction(
     @RequestBody createTransactionRequest: CreateWalletTransactionRequest
-  ): String {
+  ): CreateBlockTransactionResponse {
     walletService.createTransaction(
       senderBlockChainAddress = createTransactionRequest.senderBlockChainAddress,
       senderPrivateKey = createTransactionRequest.senderPrivateKey,
@@ -33,7 +33,7 @@ class WalletRestController(
       value = createTransactionRequest.value,
       recipientBlockChainAddress = createTransactionRequest.recipientBlockChainAddress
     )
-    return "{ \"message\" = \"success\" }"
+    return CreateBlockTransactionResponse(message = "success")
   }
 
 }
