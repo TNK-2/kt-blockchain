@@ -4,7 +4,7 @@ import com.example.ktblockchain.domain.model.blockchain.Block
 import com.example.ktblockchain.usecase.BlockChainService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -28,19 +28,15 @@ class BlockChainRestController(
 
   @PostMapping("/transactions")
   fun createTransaction(
-    @RequestParam senderBlockChainAddress: String,
-    @RequestParam recipientBlockChainAddress: String,
-    @RequestParam value: Double,
-    @RequestParam senderPublicKey: String,
-    @RequestParam signature: String
-  ): String {
+    @RequestBody createTransactionRequest: CreateBlockTransactionRequest
+  ): CreateBlockTransactionResponse {
     blockChainService.createTransaction(
-      senderBlockChainAddress = senderBlockChainAddress,
-      recipientBlockChainAddress = recipientBlockChainAddress,
-      senderPublicKey = senderPublicKey,
-      value = value,
-      hexSignature = signature
+      senderBlockChainAddress = createTransactionRequest.senderBlockChainAddress,
+      recipientBlockChainAddress = createTransactionRequest.recipientBlockChainAddress,
+      senderPublicKey = createTransactionRequest.senderPublicKey,
+      value = createTransactionRequest.value,
+      hexSignature = createTransactionRequest.signature
     )
-    return "{ \"message\" = \"success\" }"
+    return CreateBlockTransactionResponse(message = "Success")
   }
 }

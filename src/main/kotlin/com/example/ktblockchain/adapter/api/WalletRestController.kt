@@ -3,7 +3,7 @@ package com.example.ktblockchain.adapter.api
 import com.example.ktblockchain.usecase.WalletService
 import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -15,6 +15,7 @@ class WalletRestController(
   fun createWallet(): CreateWalletResponse {
     val newMyWallet = walletService.createWallet()
     return CreateWalletResponse(
+      // TODO keyクラスをそのままシリアライズはよくないので暗号化する
       privateKey = ObjectSerializer.serialize(newMyWallet.privateKey),
       publicKey = ObjectSerializer.serialize(newMyWallet.publicKey),
       blockChainAddress = newMyWallet.blockChainAddress
@@ -23,18 +24,14 @@ class WalletRestController(
 
   @PostMapping("/transaction")
   fun createTransaction(
-    @RequestParam senderBlockChainAddress: String,
-    @RequestParam recipientBlockChainAddress: String,
-    @RequestParam value: Double,
-    @RequestParam senderPublicKey: String,
-    @RequestParam senderPrivateKey: String
+    @RequestBody createTransactionRequest: CreateWalletTransactionRequest
   ): String {
     walletService.createTransaction(
-      senderBlockChainAddress = senderBlockChainAddress,
-      senderPrivateKey = senderPrivateKey,
-      senderPublicKey = senderPublicKey,
-      value = value,
-      recipientBlockChainAddress = recipientBlockChainAddress
+      senderBlockChainAddress = createTransactionRequest.senderBlockChainAddress,
+      senderPrivateKey = createTransactionRequest.senderPrivateKey,
+      senderPublicKey = createTransactionRequest.senderPublicKey,
+      value = createTransactionRequest.value,
+      recipientBlockChainAddress = createTransactionRequest.recipientBlockChainAddress
     )
     return "{ \"message\" = \"success\" }"
   }

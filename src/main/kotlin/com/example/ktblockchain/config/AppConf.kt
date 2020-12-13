@@ -8,5 +8,5 @@ object AppConf {
   const val SIGNATURE_ALGO = "SHA256withECDSA"
   const val PORT = "8080"
   const val BLOCKCHAIN_SERVER_URL = "http://localhost:8080"
-  const val CREATE_TRANSACTION_PATH = "/transaction"
+  const val CREATE_TRANSACTION_PATH = "/transactions"
 }

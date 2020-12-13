@@ -1,6 +1,7 @@
 package com.example.ktblockchain.adapter.infra.repository
 
-import com.example.ktblockchain.adapter.infra.repository.request.WalletTransactionRequest
+import com.example.ktblockchain.adapter.api.CreateBlockTransactionRequest
+import com.example.ktblockchain.adapter.api.CreateBlockTransactionResponse
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.repository.WalletTransactionRepository
@@ -15,14 +16,15 @@ class WalletTransactionRepositoryImpl(
 ): WalletTransactionRepository {
 
   override fun store(transaction: Transaction): Transaction {
-    val request = WalletTransactionRequest(
+    // TODO keyクラスをそのままシリアライズはよくないので暗号化する
+    val request = CreateBlockTransactionRequest(
       senderBlockChainAddress = transaction.senderBlockChainAddress,
       recipientBlockChainAddress = transaction.recipientBlockChainAddress,
       value = transaction.value,
       senderPublicKey = ObjectSerializer.serialize(transaction.senderPublicKey),
-      senderPrivateKey = ObjectSerializer.serialize(transaction.senderPrivateKey),
+      signature = transaction.generateSignature(),
     )
-    restTemplate.postForObject<Any>(AppConf.BLOCKCHAIN_SERVER_URL + AppConf.CREATE_TRANSACTION_PATH, request)
+    restTemplate.postForObject<CreateBlockTransactionResponse>(AppConf.BLOCKCHAIN_SERVER_URL + AppConf.CREATE_TRANSACTION_PATH, request)
     return transaction
   }
 }
