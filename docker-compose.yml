@@ -12,6 +12,21 @@ services:
       - "./:/var/app:cached"
       - "kt-blockchain-gradle-dependencies:/root/.gradle"
       - "kt-blockchain-gradle:/var/app/.gradle/"
+      - "kt-blockchain-build:/var/app/build/"
+    command: ./gradlew bootRun # --debug-jvm
+
+  kt-blockchain-2:
+    container_name: "kt-blockchain-2"
+    working_dir: /var/app/
+    image: adoptopenjdk/openjdk11:alpine
+    tty: true
+    ports:
+      - "5001:8080"
+    volumes:
+      - "./:/var/app:cached"
+      - "kt-blockchain-gradle-dependencies-2:/root/.gradle"
+      - "kt-blockchain-gradle-2:/var/app/.gradle/"
+      - "kt-blockchain-build-2:/var/app/build/"
     command: ./gradlew bootRun # --debug-jvm
 
   kt-wallet:
@@ -25,12 +40,21 @@ services:
       - "./:/var/app:cached"
       - "kt-wallet-gradle-dependencies:/root/.gradle"
       - "kt-wallet-gradle:/var/app/.gradle/"
+      - "kt-wallet-build:/var/app/build/"
     command: ./gradlew bootRun # --debug-jvm
 
 volumes:
   kt-blockchain-gradle-dependencies:
     driver: local
   kt-blockchain-gradle:
+  kt-blockchain-build:
+
+  kt-blockchain-gradle-dependencies-2:
+    driver: local
+  kt-blockchain-gradle-2:
+  kt-blockchain-build-2:
+
   kt-wallet-gradle-dependencies:
     driver: local
   kt-wallet-gradle:
+  kt-wallet-build:
