@@ -8,6 +8,10 @@ services:
     tty: true
     ports:
       - "5000:8080"
+    expose:
+      - "8080"
+    networks:
+      - blockchain
     volumes:
       - "./:/var/app:cached"
       - "kt-blockchain-gradle-dependencies:/root/.gradle"
@@ -22,6 +26,10 @@ services:
     tty: true
     ports:
       - "5001:8080"
+    expose:
+      - "8080"
+    networks:
+      - blockchain
     volumes:
       - "./:/var/app:cached"
       - "kt-blockchain-gradle-dependencies-2:/root/.gradle"
@@ -36,6 +44,8 @@ services:
     tty: true
     ports:
       - "8080:8080"
+    networks:
+      - wallet
     volumes:
       - "./:/var/app:cached"
       - "kt-wallet-gradle-dependencies:/root/.gradle"
@@ -58,3 +68,17 @@ volumes:
     driver: local
   kt-wallet-gradle:
   kt-wallet-build:
+
+networks:
+  blockchain:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.20.0/29
+  wallet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/29

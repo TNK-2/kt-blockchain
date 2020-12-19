@@ -66,8 +66,13 @@ object HostSearch {
     return neighbourList
   }
 
-  fun getMyHost(): String =
-    ServerSocket().inetAddress?.hostName
-      ?: AppConf.DEFAULT_HOST_MAME
+  fun getMyHost(): String {
+    val serverSocket = ServerSocket()
+    val hostName = serverSocket.inetAddress?.hostName
+      ?: serverSocket.inetAddress?.hostAddress
+        ?: AppConf.DEFAULT_HOST_NAME
+    KtLog.logger.info("このサーバーのホスト名は「%s」です。".format(hostName))
+    return hostName
+  }
 
 }
