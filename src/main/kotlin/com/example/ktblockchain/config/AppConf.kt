@@ -11,6 +11,6 @@ object AppConf {
   const val CREATE_TRANSACTION_PATH = "/transactions"
   const val DEFAULT_HOST_NAME = "192.168.20.2"
   val BLOCKCHAIN_PORT_RANGE = 8080..8080
-  val NEIGHBOURS_IP_RANGE = 0..1
+  val NEIGHBOURS_IP_RANGE = -1..1
   const val BLOCKCHAIN_NEIGHBOURS_SYNC_TIME_SEC = 20000
 }

@@ -49,7 +49,7 @@ class BlockChain(
           this.neighbours = HostSearch.findNeighbours(
             myHost = HostSearch.getMyHost(),
             myPort = this.port,
-            ipRange = AppConf.NEIGHBOURS_IP_RANGE,
+            searchIpRange = AppConf.NEIGHBOURS_IP_RANGE,
             portRange = AppConf.BLOCKCHAIN_PORT_RANGE
           )
           logger.info(("近隣ノードが追加されました%s").format(this.neighbours))

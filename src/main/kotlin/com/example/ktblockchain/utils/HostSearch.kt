@@ -46,7 +46,7 @@ object HostSearch {
   fun findNeighbours(
     myHost: String,
     myPort: Int,
-    ipRange: IntRange,
+    searchIpRange: IntRange,
     portRange: IntRange
   ): List<String> {
     val matchResult = REGEX_IP.find(myHost)
@@ -55,11 +55,13 @@ object HostSearch {
 
     val neighbourList = mutableListOf<String>()
     for (guessPort in portRange) {
-      for (ipRange in ipRange) {
-        val guessHost = prefixHost + (lastIp.toInt() + ipRange)
-        val guessAddress = "$guessHost:$guessPort"
-        if (this.isHostExist(guessHost, guessPort) && guessAddress != "$myHost:$myPort") {
-          neighbourList.add(guessAddress)
+      for (ipRange in searchIpRange) {
+        if (lastIp.toInt() + ipRange > 1) {
+          val guessHost = prefixHost + (lastIp.toInt() + ipRange)
+          val guessAddress = "$guessHost:$guessPort"
+          if (this.isHostExist(guessHost, guessPort) && guessAddress != "$myHost:$myPort") {
+            neighbourList.add(guessAddress)
+          }
         }
       }
     }
