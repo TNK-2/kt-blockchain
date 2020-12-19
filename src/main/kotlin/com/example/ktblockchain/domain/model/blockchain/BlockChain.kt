@@ -57,7 +57,7 @@ class BlockChain(
           e.printStackTrace()
           logger.error("近隣ノード検索中にエラーが発生しました。")
         } finally {
-          Thread.sleep(20000)
+          Thread.sleep(AppConf.BLOCKCHAIN_NEIGHBOURS_SYNC_TIME_SEC.toLong())
         }
       }
     }

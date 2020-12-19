@@ -2,8 +2,8 @@ package com.example.ktblockchain.utils
 
 import com.example.ktblockchain.config.AppConf
 import java.io.IOException
+import java.net.InetAddress
 import java.net.InetSocketAddress
-import java.net.ServerSocket
 import java.net.Socket
 
 //fun main(args: Array<String>) {
@@ -67,10 +67,8 @@ object HostSearch {
   }
 
   fun getMyHost(): String {
-    val serverSocket = ServerSocket()
-    val hostName = serverSocket.inetAddress?.hostName
-      ?: serverSocket.inetAddress?.hostAddress
-        ?: AppConf.DEFAULT_HOST_NAME
+    val hostName = InetAddress.getLocalHost().hostAddress
+      ?: AppConf.DEFAULT_HOST_NAME
     KtLog.logger.info("このサーバーのホスト名は「%s」です。".format(hostName))
     return hostName
   }
