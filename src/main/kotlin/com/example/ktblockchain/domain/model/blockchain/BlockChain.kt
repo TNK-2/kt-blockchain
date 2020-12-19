@@ -2,20 +2,24 @@ package com.example.ktblockchain.domain.model.blockchain
 
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.utils.HashUtil
+import com.example.ktblockchain.utils.HostSearch
 import com.example.ktblockchain.utils.KtLog
 import org.apache.tomcat.util.buf.HexUtils
 import java.security.PublicKey
 import java.security.Signature
+import kotlin.concurrent.thread
 
 class BlockChain(
   var transactionPool: MutableList<Transaction> = mutableListOf(),
   val chain: MutableList<Block> = mutableListOf(),
   private val blockChainAddress: String,
-  private val port: String = AppConf.PORT
+  private val port: Int = AppConf.PORT,
+  private var neighbours: List<String> = mutableListOf()
 ) {
 
   init {
     this.createBlock(0, "init hash")
+    this.syncNeighbours()
   }
 
   companion object {
@@ -35,6 +39,28 @@ class BlockChain(
     )
     this.chain.add(block)
     this.transactionPool = mutableListOf()
+  }
+
+  private fun syncNeighbours() {
+    thread {
+      while (true) {
+        try {
+          logger.info("近隣ノードを検索します。")
+          this.neighbours = HostSearch.findNeighbours(
+            myHost = HostSearch.getMyHost(),
+            myPort = this.port,
+            ipRange = AppConf.NEIGHBOURS_IP_RANGE,
+            portRange = AppConf.BLOCKCHAIN_PORT_RANGE
+          )
+          logger.info(("近隣ノードが追加されました%s").format(this.neighbours))
+        } catch (e: Exception) {
+          e.printStackTrace()
+          logger.error("近隣ノード検索中にエラーが発生しました。")
+        } finally {
+          Thread.sleep(20000)
+        }
+      }
+    }
   }
 
   fun getBlockHash(block: Block): String =

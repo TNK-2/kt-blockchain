@@ -5,7 +5,6 @@ import com.example.ktblockchain.domain.model.blockchain.BlockChain
 import com.example.ktblockchain.domain.repository.BlockChainRepository
 import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 import java.security.PublicKey
 
 @Service

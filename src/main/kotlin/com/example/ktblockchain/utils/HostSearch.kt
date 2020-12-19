@@ -1,7 +1,9 @@
 package com.example.ktblockchain.utils
 
+import com.example.ktblockchain.config.AppConf
 import java.io.IOException
 import java.net.InetSocketAddress
+import java.net.ServerSocket
 import java.net.Socket
 
 //fun main(args: Array<String>) {
@@ -29,12 +31,12 @@ object HostSearch {
       KtLog.logger.info("疎通が確認できました。疎通先... %s%s%s".format(targetIp, ":", targetPort))
       true
     } catch (e: IOException) {
-      e.printStackTrace()
+      // e.printStackTrace()
       KtLog.logger.error("通信に失敗しました。%s%s%sは存在しないか、すでに接続済みです。".format(targetIp, ":", targetPort))
       false
     } catch (e: Exception) {
       e.printStackTrace()
-      KtLog.logger.error("通信に失敗しました。")
+      KtLog.logger.error("予期せぬ不具合で通信に失敗しました。")
       false
     } finally {
       socket.close()
@@ -44,18 +46,16 @@ object HostSearch {
   fun findNeighbours(
     myHost: String,
     myPort: Int,
-    startIpRange: Int,
-    endIpRange: Int,
-    startPort: Int,
-    endPort: Int
+    ipRange: IntRange,
+    portRange: IntRange
   ): List<String> {
     val matchResult = REGEX_IP.find(myHost)
       ?: throw IllegalArgumentException("不正なIPアドレス・ポートです")
     val (prefixHost, lastIp) = matchResult.destructured
 
     val neighbourList = mutableListOf<String>()
-    for (guessPort in startPort..endPort) {
-      for (ipRange in startIpRange..endIpRange) {
+    for (guessPort in portRange) {
+      for (ipRange in ipRange) {
         val guessHost = prefixHost + (lastIp.toInt() + ipRange)
         val guessAddress = "$guessHost:$guessPort"
         if (this.isHostExist(guessHost, guessPort) && guessAddress != "$myHost:$myPort") {
@@ -65,4 +65,9 @@ object HostSearch {
     }
     return neighbourList
   }
+
+  fun getMyHost(): String =
+    ServerSocket().inetAddress?.hostName
+      ?: AppConf.DEFAULT_HOST_MAME
+
 }
