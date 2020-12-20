@@ -12,33 +12,17 @@ import kotlin.concurrent.thread
 class BlockChain(
   var transactionPool: MutableList<Transaction> = mutableListOf(),
   val chain: MutableList<Block> = mutableListOf(),
-  private val blockChainAddress: String,
+  val blockChainAddress: String,
   private val port: Int = AppConf.PORT,
-  private var neighbours: List<String> = mutableListOf()
+  var neighbours: List<String> = mutableListOf()
 ) {
 
   init {
-    this.createBlock(0, "init hash")
     this.syncNeighbours()
   }
 
   companion object {
     private val logger = KtLog.logger
-  }
-
-  private fun createBlock(
-    nonce: Int,
-    previousHash: String = this.getLastBlockHash(),
-    timestamp: Long = System.currentTimeMillis()
-  ) {
-    val block = Block(
-      timestamp = timestamp,
-      nonce = nonce,
-      previousHash = previousHash,
-      transactions = this.transactionPool
-    )
-    this.chain.add(block)
-    this.transactionPool = mutableListOf()
   }
 
   private fun syncNeighbours() {
@@ -104,24 +88,6 @@ class BlockChain(
     return false
   }
 
-  fun createTransaction(
-    senderBlockChainAddress: String,
-    recipientBlockChainAddress: String,
-    value: Double,
-    senderPublicKey: PublicKey,
-    hexSignature: String
-  ): Boolean {
-    // TODO sync
-
-    return addTransaction(
-      senderBlockChainAddress = senderBlockChainAddress,
-      recipientBlockChainAddress = recipientBlockChainAddress,
-      value = value,
-      senderPublicKey = senderPublicKey,
-      hexSignature = hexSignature
-    )
-  }
-
   fun calculateTotalAmount(blockChainAddress: String): Double {
     var totalAmount = 0.0
     this.chain.forEach { block ->
@@ -168,7 +134,7 @@ class BlockChain(
     return guessHash.substring(0, difficulty) == "0".repeat(difficulty)
   }
 
-  private fun proofOfWork(): Int {
+  fun proofOfWork(): Int {
     val transactions = this.transactionPool.toList()
     val previousHash = this.getLastBlockHash()
     val timestamp = System.currentTimeMillis()
@@ -177,18 +143,6 @@ class BlockChain(
       nonce++
     }
     return nonce
-  }
-
-  fun mining(): Boolean {
-    this.addTransaction(
-      senderBlockChainAddress = AppConf.MINING_SENDER,
-      recipientBlockChainAddress = this.blockChainAddress,
-      value = AppConf.MINING_REWARD
-    )
-    val nonce = this.proofOfWork()
-    this.createBlock(nonce = nonce)
-    logger.info("{ \"action\" : \"mining\", \"status\" = \"success\" }")
-    return true
   }
 
   fun print(chains: List<Block> = this.chain) {

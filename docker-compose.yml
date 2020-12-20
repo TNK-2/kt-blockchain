@@ -10,6 +10,7 @@ services:
       - "5000:8080"
     expose:
       - "8080"
+      - "5000"
     networks:
       blockchain:
         ipv4_address: 192.168.20.2
@@ -29,6 +30,7 @@ services:
       - "5001:8080"
     expose:
       - "8080"
+      - "5001"
     networks:
       blockchain:
         ipv4_address: 192.168.20.3
@@ -47,7 +49,8 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - wallet
+      blockchain:
+        ipv4_address: 192.168.20.6
     volumes:
       - "./:/var/app:cached"
       - "kt-wallet-gradle-dependencies:/root/.gradle"
@@ -78,9 +81,3 @@ networks:
       driver: default
       config:
         - subnet: 192.168.20.0/29
-  wallet:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.10.0/29
