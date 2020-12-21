@@ -145,6 +145,29 @@ class BlockChain(
     return nonce
   }
 
+  /**
+   * ブロックチェーンの検証。
+   * 各ブロックのハッシュをチェックしてブロックが適正か判断する。
+   */
+  fun validChain(chain: List<Block>): Boolean {
+    var preBlock = chain.first()
+    for (i in 1..chain.size) {
+      val block = chain[i]
+      if (block.previousHash != this.getBlockHash(preBlock)) {
+        return false
+      }
+      if (!this.validProof(
+          transactions = block.transactions,
+          previousHash = block.previousHash,
+          nonce = block.nonce,
+          timestamp = block.timestamp)) {
+        return false
+      }
+      preBlock = block
+    }
+    return true
+  }
+
   fun print(chains: List<Block> = this.chain) {
     println("**Current Transaction*****************")
     transactionPool.forEachIndexed { i, transaction ->
