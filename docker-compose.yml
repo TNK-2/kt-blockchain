@@ -19,7 +19,7 @@ services:
       - "kt-blockchain-gradle-dependencies:/root/.gradle"
       - "kt-blockchain-gradle:/var/app/.gradle/"
       - "kt-blockchain-build:/var/app/build/"
-    command: ./gradlew bootRun # --debug-jvm
+    command: ./gradlew bootRun --stacktrace # --debug-jvm
 
   kt-blockchain-2:
     container_name: "kt-blockchain-2"
@@ -39,7 +39,7 @@ services:
       - "kt-blockchain-gradle-dependencies-2:/root/.gradle"
       - "kt-blockchain-gradle-2:/var/app/.gradle/"
       - "kt-blockchain-build-2:/var/app/build/"
-    command: ./gradlew bootRun # --debug-jvm
+    command: ./gradlew bootRun --stacktrace # --debug-jvm
 
   kt-wallet:
     container_name: "kt-wallet"
@@ -56,7 +56,7 @@ services:
       - "kt-wallet-gradle-dependencies:/root/.gradle"
       - "kt-wallet-gradle:/var/app/.gradle/"
       - "kt-wallet-build:/var/app/build/"
-    command: ./gradlew bootRun # --debug-jvm
+    command: ./gradlew bootRun --stacktrace # --debug-jvm
 
 volumes:
   kt-blockchain-gradle-dependencies:

@@ -9,6 +9,8 @@ object AppConf {
   const val PORT = 8080
   const val BLOCKCHAIN_SERVER_URL = "http://192.168.20.2:8080"
   const val CREATE_TRANSACTION_PATH = "/transactions"
+  const val CREATE_CONSENSUS_PATH = "/consensus"
+  const val CHAIN_PATH = "/chain"
   const val DEFAULT_HOST_NAME = "192.168.20.2"
   val BLOCKCHAIN_PORT_RANGE = 8080..8080
   val NEIGHBOURS_IP_RANGE = -1..1

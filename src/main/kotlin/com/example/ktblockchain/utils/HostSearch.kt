@@ -28,7 +28,7 @@ object HostSearch {
     val socket = Socket()
     return try {
       socket.connect(InetSocketAddress(targetIp, targetPort), 1000)
-      KtLog.logger.info("疎通が確認できました。疎通先... %s%s%s".format(targetIp, ":", targetPort))
+      // KtLog.logger.info("疎通が確認できました。疎通先... %s%s%s".format(targetIp, ":", targetPort))
       true
     } catch (e: IOException) {
       // e.printStackTrace()

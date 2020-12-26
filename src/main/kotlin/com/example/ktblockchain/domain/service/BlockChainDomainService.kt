@@ -41,12 +41,19 @@ class BlockChainDomainService(
       recipientBlockChainAddress = blockChain.blockChainAddress,
       value = AppConf.MINING_REWARD
     )
-    val nonce = blockChain.proofOfWork()
+    val timestamp = System.currentTimeMillis()
+    val nonce = blockChain.proofOfWork(timestamp = timestamp)
     this.createBlock(
       nonce = nonce,
       previousHash = blockChain.getLastBlockHash(),
-      blockChain = blockChain
+      blockChain = blockChain,
+      timestamp = timestamp
     )
+
+    blockChain.neighbours.forEach { host ->
+      blockChainRepository.consensus(hostIp = host)
+    }
+
     KtLog.logger.info("{ \"action\" : \"mining\", \"status\" : \"success\" }")
     return true
   }
@@ -58,7 +65,7 @@ class BlockChainDomainService(
     value: Double,
     senderPublicKey: String,
     hexSignature: String
-  ){
+  ) {
     blockChain.neighbours.forEach { neighbour ->
       blockChainRepository.putTransaction(
         recipientHost = neighbour,
@@ -69,5 +76,28 @@ class BlockChainDomainService(
         senderBlockChainAddress = senderBlockChainAddress
       )
     }
+  }
+
+  fun resolveConflicts(
+    blockChain: BlockChain
+  ): Boolean {
+    var longestChain: List<Block>? = null
+    var maxLength = blockChain.chain.size
+    blockChain.neighbours.forEach { ipaddr ->
+      val chain = blockChainRepository.getChain(ipaddr)
+      KtLog.logger.info("blockChain.validChain(chain) : %s".format(blockChain.validChain(chain)))
+      if (chain.size > maxLength && blockChain.validChain(chain)) {
+        maxLength = chain.size
+        longestChain = chain
+      }
+    }
+
+    longestChain?.let {
+      blockChain.chain = it.toMutableList()
+      KtLog.logger.info("コンセンサスにより、ブロックチェーンが他のサーバーの物に置き換えられました")
+      return true
+    }
+    KtLog.logger.info("コンセンサスによっての置き換えは発生しませんでした")
+    return false
   }
 }

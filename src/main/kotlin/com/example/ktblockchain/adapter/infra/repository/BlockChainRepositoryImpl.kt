@@ -2,13 +2,13 @@ package com.example.ktblockchain.adapter.infra.repository
 
 import com.example.ktblockchain.adapter.api.CreateBlockTransactionRequest
 import com.example.ktblockchain.config.AppConf
+import com.example.ktblockchain.domain.model.blockchain.Block
 import com.example.ktblockchain.domain.model.blockchain.BlockChain
-import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.repository.BlockChainRepository
 import com.example.ktblockchain.utils.KtLog
-import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 
 @Repository
 class BlockChainRepositoryImpl(
@@ -34,6 +34,7 @@ class BlockChainRepositoryImpl(
     senderPublicKey: String,
     hexSignature: String
   ) {
+    val url = "http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH
     // TODO keyクラスをそのままシリアライズはよくないので暗号化する
     val request = CreateBlockTransactionRequest(
       senderBlockChainAddress = senderBlockChainAddress,
@@ -42,13 +43,33 @@ class BlockChainRepositoryImpl(
       senderPublicKey = senderPublicKey,
       signature = hexSignature,
     )
-    KtLog.logger.info("BlockChainRepositoryImpl.putTransaction... URL : %s".format("http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH))
+    KtLog.logger.info("BlockChainRepositoryImpl.putTransaction... URL : %s".format(url))
     restTemplate.put("http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH, request)
   }
 
   override fun deleteTransaction(recipientHost: String) {
-    KtLog.logger.info("BlockChainRepositoryImpl.deleteTransaction... URL : %s".format("http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH))
+    val url = "http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH
+    KtLog.logger.info("BlockChainRepositoryImpl.deleteTransaction... URL : %s".format(url))
     restTemplate.delete("http://" + recipientHost + AppConf.CREATE_TRANSACTION_PATH)
+  }
+
+  override fun getChain(hostIp: String): List<Block> {
+    val url = "http://" + hostIp + AppConf.CHAIN_PATH
+    KtLog.logger.info("BlockChainRepositoryImpl.getChain... URL : %s".format(url))
+    return (restTemplate.getForObject(url) as Array<Block>).map {
+      Block(
+        timestamp = it.timestamp,
+        nonce = it.nonce,
+        previousHash = it.previousHash,
+        transactions = it.transactions
+      )
+    }
+  }
+
+  override fun consensus(hostIp: String) {
+    val url = "http://" + hostIp + AppConf.CREATE_CONSENSUS_PATH
+    KtLog.logger.info("BlockChainRepositoryImpl.consensus... URL : %s".format(url))
+    restTemplate.put(url, null)
   }
 
 }

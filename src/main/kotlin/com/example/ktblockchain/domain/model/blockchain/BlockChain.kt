@@ -11,7 +11,7 @@ import kotlin.concurrent.thread
 
 class BlockChain(
   var transactionPool: MutableList<Transaction> = mutableListOf(),
-  val chain: MutableList<Block> = mutableListOf(),
+  var chain: MutableList<Block> = mutableListOf(),
   val blockChainAddress: String,
   private val port: Int = AppConf.PORT,
   var neighbours: List<String> = mutableListOf()
@@ -134,10 +134,9 @@ class BlockChain(
     return guessHash.substring(0, difficulty) == "0".repeat(difficulty)
   }
 
-  fun proofOfWork(): Int {
+  fun proofOfWork(timestamp: Long): Int {
     val transactions = this.transactionPool.toList()
     val previousHash = this.getLastBlockHash()
-    val timestamp = System.currentTimeMillis()
     var nonce = 0;
     while (!this.validProof(transactions = transactions, previousHash = previousHash, nonce = nonce, timestamp = timestamp)) {
       nonce++
@@ -150,10 +149,11 @@ class BlockChain(
    * 各ブロックのハッシュをチェックしてブロックが適正か判断する。
    */
   fun validChain(chain: List<Block>): Boolean {
-    var preBlock = chain.first()
-    for (i in 1..chain.size) {
+   var preBlock = chain.first()
+    for (i in 1 until chain.size) {
       val block = chain[i]
       if (block.previousHash != this.getBlockHash(preBlock)) {
+        KtLog.logger.warn("前後ブロックのハッシュ整合性不正!! ... " + block.previousHash + " : " + this.getBlockHash(preBlock))
         return false
       }
       if (!this.validProof(
@@ -161,6 +161,7 @@ class BlockChain(
           previousHash = block.previousHash,
           nonce = block.nonce,
           timestamp = block.timestamp)) {
+        KtLog.logger.warn("ブロックのハッシュ形式不正")
         return false
       }
       preBlock = block

@@ -2,6 +2,7 @@ package com.example.ktblockchain.adapter.api
 
 import com.example.ktblockchain.domain.model.blockchain.Block
 import com.example.ktblockchain.usecase.BlockChainService
+import com.example.ktblockchain.utils.KtLog
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -76,4 +77,9 @@ class BlockChainRestController(
       MineResponse(message = "Failed")
     }
 
+  @PutMapping("/consensus")
+  fun consensus(): ConsensusResponse {
+    KtLog.logger.info(">>>>>>>>>コンセンサス開始>>>>>>>>>>")
+    return ConsensusResponse(replaced = blockChainService.consensus())
+  }
 }

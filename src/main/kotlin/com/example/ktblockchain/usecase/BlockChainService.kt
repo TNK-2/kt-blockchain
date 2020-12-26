@@ -78,4 +78,10 @@ class BlockChainService(
       ?: throw IllegalStateException("ブロックチェーンが存在しません")
     return blockChainDomainService.mining(blockChain = blockChain)
   }
+
+  fun consensus(): Boolean {
+    val blockChain = blockChainRepository.findOne()
+      ?: throw IllegalStateException("ブロックチェーンが存在しません")
+    return blockChainDomainService.resolveConflicts(blockChain = blockChain)
+  }
 }

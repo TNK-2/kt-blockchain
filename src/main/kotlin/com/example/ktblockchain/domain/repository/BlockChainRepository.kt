@@ -1,5 +1,6 @@
 package com.example.ktblockchain.domain.repository
 
+import com.example.ktblockchain.domain.model.blockchain.Block
 import com.example.ktblockchain.domain.model.blockchain.BlockChain
 
 interface BlockChainRepository {
@@ -14,4 +15,6 @@ interface BlockChainRepository {
     hexSignature: String
   )
   fun deleteTransaction(recipientHost: String)
+  fun getChain(hostIp: String): List<Block>
+  fun consensus(hostIp: String)
 }
