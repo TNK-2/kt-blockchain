@@ -2,6 +2,7 @@ package com.example.ktblockchain.adapter.api
 
 import com.example.ktblockchain.usecase.WalletService
 import com.example.ktblockchain.utils.ObjectSerializer
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -36,4 +37,10 @@ class WalletRestController(
     return CreateBlockTransactionResponse(message = "success")
   }
 
+  @GetMapping("/wallet/amount")
+  fun calculateAmount(getTotalAmountRequest: GetTotalAmountRequest): GetAmountResponse =
+    GetAmountResponse(
+      message = "success",
+      amount = walletService.getTotalAmount(blockChainAddress = getTotalAmountRequest.blockChainAddress)
+    )
 }

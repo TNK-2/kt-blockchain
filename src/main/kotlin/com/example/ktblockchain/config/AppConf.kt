@@ -11,6 +11,7 @@ object AppConf {
   const val CREATE_TRANSACTION_PATH = "/transactions"
   const val CREATE_CONSENSUS_PATH = "/consensus"
   const val CHAIN_PATH = "/chain"
+  const val GET_TOTAL_AMOUNT_PATH  = "/amount?blockChainAddress={blockChainAddress}"
   const val DEFAULT_HOST_NAME = "192.168.20.2"
   val BLOCKCHAIN_PORT_RANGE = 8080..8080
   val NEIGHBOURS_IP_RANGE = -1..1

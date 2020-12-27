@@ -82,4 +82,14 @@ class BlockChainRestController(
     KtLog.logger.info(">>>>>>>>>コンセンサス開始>>>>>>>>>>")
     return ConsensusResponse(replaced = blockChainService.consensus())
   }
+
+  @GetMapping("/amount")
+  fun getTotalAmount(getTotalAmountRequest: GetTotalAmountRequest): GetAmountResponse {
+    return GetAmountResponse(
+      message = "success",
+      amount = blockChainService.totalAmount(
+        blockChainAddress = getTotalAmountRequest.blockChainAddress
+      )
+    )
+  }
 }

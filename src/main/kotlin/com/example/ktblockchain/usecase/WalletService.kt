@@ -33,4 +33,7 @@ class WalletService(
       )
     )
   }
+
+  fun getTotalAmount(blockChainAddress: String): Double =
+    walletTransactionRepository.getTotalAmount(blockChainAddress = blockChainAddress)
 }

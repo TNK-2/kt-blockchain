@@ -2,12 +2,15 @@ package com.example.ktblockchain.adapter.infra.repository
 
 import com.example.ktblockchain.adapter.api.CreateBlockTransactionRequest
 import com.example.ktblockchain.adapter.api.CreateBlockTransactionResponse
+import com.example.ktblockchain.adapter.api.GetAmountResponse
+import com.example.ktblockchain.adapter.api.GetTotalAmountRequest
 import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.domain.model.wallet.Transaction
 import com.example.ktblockchain.domain.repository.WalletTransactionRepository
 import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 import org.springframework.web.client.postForObject
 
 @Repository
@@ -26,5 +29,10 @@ class WalletTransactionRepositoryImpl(
     )
     restTemplate.postForObject<CreateBlockTransactionResponse>(AppConf.BLOCKCHAIN_SERVER_URL + AppConf.CREATE_TRANSACTION_PATH, request)
     return transaction
+  }
+
+  override fun getTotalAmount(blockChainAddress: String): Double {
+    val getAmountResponse = restTemplate.getForObject<GetAmountResponse>(AppConf.BLOCKCHAIN_SERVER_URL + AppConf.GET_TOTAL_AMOUNT_PATH, blockChainAddress)
+    return getAmountResponse.amount
   }
 }

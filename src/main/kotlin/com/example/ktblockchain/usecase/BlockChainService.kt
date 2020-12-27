@@ -8,6 +8,7 @@ import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
 import java.security.PublicKey
+import javax.annotation.PostConstruct
 
 @Service
 class BlockChainService(
@@ -15,6 +16,11 @@ class BlockChainService(
   private val blockChainDomainService: BlockChainDomainService,
   private val blockChainFactory: BlockChainFactory
 ) {
+
+  @PostConstruct
+  fun postConstruct() {
+    blockChainRepository.store(blockChain = blockChainFactory.new())
+  }
 
   fun getBlockChain(): BlockChain =
     blockChainRepository.findOne()
@@ -83,5 +89,11 @@ class BlockChainService(
     val blockChain = blockChainRepository.findOne()
       ?: throw IllegalStateException("ブロックチェーンが存在しません")
     return blockChainDomainService.resolveConflicts(blockChain = blockChain)
+  }
+
+  fun totalAmount(blockChainAddress: String): Double {
+    val blockChain = blockChainRepository.findOne()
+      ?: throw IllegalStateException("ブロックチェーンが存在しません")
+    return blockChain.calculateTotalAmount(blockChainAddress = blockChainAddress)
   }
 }
