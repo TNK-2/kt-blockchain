@@ -55,6 +55,7 @@ class BlockChainDomainService(
     }
 
     KtLog.logger.info("{ \"action\" : \"mining\", \"status\" : \"success\" }")
+    KtLog.logger.info("「%s」に「%s」のマイニング報酬が与えられました。".format(blockChain.blockChainAddress, AppConf.MINING_REWARD))
     return true
   }
 

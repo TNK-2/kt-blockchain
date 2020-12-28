@@ -32,7 +32,7 @@ object HostSearch {
       true
     } catch (e: IOException) {
       // e.printStackTrace()
-      KtLog.logger.error("通信に失敗しました。%s%s%sは存在しないか、すでに接続済みです。".format(targetIp, ":", targetPort))
+      // KtLog.logger.error("通信に失敗しました。%s%s%sは存在しないか、すでに接続済みです。".format(targetIp, ":", targetPort))
       false
     } catch (e: Exception) {
       e.printStackTrace()
@@ -71,7 +71,7 @@ object HostSearch {
   fun getMyHost(): String {
     val hostName = InetAddress.getLocalHost().hostAddress
       ?: AppConf.DEFAULT_HOST_NAME
-    KtLog.logger.info("このサーバーのホスト名は「%s」です。".format(hostName))
+    // KtLog.logger.info("このサーバーのホスト名は「%s」です。".format(hostName))
     return hostName
   }
 

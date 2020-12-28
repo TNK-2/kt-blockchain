@@ -4,6 +4,7 @@ import com.example.ktblockchain.domain.model.blockchain.BlockChain
 import com.example.ktblockchain.domain.model.wallet.Wallet
 import com.example.ktblockchain.domain.service.BlockChainDomainService
 import com.example.ktblockchain.utils.KtLog
+import com.example.ktblockchain.utils.ObjectSerializer
 import org.springframework.stereotype.Component
 
 @Component
@@ -17,10 +18,6 @@ class BlockChainFactory(
 
   fun new(): BlockChain {
     val minersWallet = Wallet()
-    logger.warn("private key : " + minersWallet.privateKey)
-    logger.warn("public key : " + minersWallet.publicKey)
-    logger.warn("blockchain addr : " + minersWallet.blockChainAddress)
-
     val blockChain = BlockChain(
       blockChainAddress = minersWallet.blockChainAddress
     )
@@ -31,6 +28,10 @@ class BlockChainFactory(
       blockChain = blockChain
     )
 
+    logger.warn("ブロックチェーンインスタンスが新規に作成されました。")
+    logger.warn("private key : " + ObjectSerializer.serialize(minersWallet.privateKey))
+    logger.warn("public key : " + ObjectSerializer.serialize(minersWallet.publicKey))
+    logger.warn("blockchain addr : " + minersWallet.blockChainAddress)
     return blockChain
   }
 }

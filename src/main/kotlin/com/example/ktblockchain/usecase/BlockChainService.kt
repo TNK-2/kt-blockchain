@@ -1,5 +1,6 @@
 package com.example.ktblockchain.usecase
 
+import com.example.ktblockchain.config.AppConf
 import com.example.ktblockchain.domain.factory.BlockChainFactory
 import com.example.ktblockchain.domain.model.blockchain.BlockChain
 import com.example.ktblockchain.domain.repository.BlockChainRepository
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
 import java.security.PublicKey
 import javax.annotation.PostConstruct
+import kotlin.concurrent.thread
 
 @Service
 class BlockChainService(
@@ -19,7 +21,15 @@ class BlockChainService(
 
   @PostConstruct
   fun postConstruct() {
-    blockChainRepository.store(blockChain = blockChainFactory.new())
+    val blockChain = blockChainRepository.store(blockChain = blockChainFactory.new())
+    blockChain.syncNeighbours()
+    blockChainDomainService.resolveConflicts(blockChain = blockChain)
+    thread {
+      while (true) {
+        blockChainDomainService.mining(blockChain = blockChain)
+        Thread.sleep(AppConf.BLOCKCHAIN_NEIGHBOURS_SYNC_TIME_SEC.toLong())
+      }
+    }
   }
 
   fun getBlockChain(): BlockChain =
@@ -71,6 +81,7 @@ class BlockChainService(
       value = value,
       recipientBlockChainAddress = recipientBlockChainAddress
     )
+
   }
 
   fun deleteTransaction() {
@@ -79,7 +90,7 @@ class BlockChainService(
     blockChain.transactionPool = mutableListOf()
   }
 
-  fun mine():Boolean {
+  fun mine(): Boolean {
     val blockChain = blockChainRepository.findOne()
       ?: throw IllegalStateException("ブロックチェーンが存在しません")
     return blockChainDomainService.mining(blockChain = blockChain)

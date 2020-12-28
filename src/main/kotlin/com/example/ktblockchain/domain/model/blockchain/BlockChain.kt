@@ -5,6 +5,8 @@ import com.example.ktblockchain.utils.HashUtil
 import com.example.ktblockchain.utils.HostSearch
 import com.example.ktblockchain.utils.KtLog
 import org.apache.tomcat.util.buf.HexUtils
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.security.PublicKey
 import java.security.Signature
 import kotlin.concurrent.thread
@@ -17,31 +19,27 @@ class BlockChain(
   var neighbours: List<String> = mutableListOf()
 ) {
 
-  init {
-    this.syncNeighbours()
-  }
-
   companion object {
     private val logger = KtLog.logger
   }
 
-  private fun syncNeighbours() {
+  fun syncNeighbours() {
     thread {
       while (true) {
         try {
-          logger.info("近隣ノードを検索します。")
+          // logger.info("近隣ノードを検索します。")
           this.neighbours = HostSearch.findNeighbours(
             myHost = HostSearch.getMyHost(),
             myPort = this.port,
             searchIpRange = AppConf.NEIGHBOURS_IP_RANGE,
             portRange = AppConf.BLOCKCHAIN_PORT_RANGE
           )
-          logger.info(("近隣ノードが追加されました%s").format(this.neighbours))
+          // logger.info(("近隣ノードが追加されました%s").format(this.neighbours))
         } catch (e: Exception) {
           e.printStackTrace()
           logger.error("近隣ノード検索中にエラーが発生しました。")
         } finally {
-          Thread.sleep(AppConf.BLOCKCHAIN_NEIGHBOURS_SYNC_TIME_SEC.toLong())
+          Thread.sleep(AppConf.BLOCKCHAIN_MINING_TIME_SEC.toLong())
         }
       }
     }
@@ -60,38 +58,41 @@ class BlockChain(
     senderPublicKey: PublicKey? = null,
     hexSignature: String? = null
   ): Boolean {
-//    if (this.calculateTotalAmount(senderBlockChainAddress) < value) {
-//      logger.error("残高が足りません...")
-//      return false
-//    }
 
     val transaction = Transaction(
       senderBlockChainAddress = senderBlockChainAddress,
       recipientBlockChainAddress = recipientBlockChainAddress,
       value = value
     )
+
     if (senderBlockChainAddress == AppConf.MINING_SENDER) {
       transactionPool.add(transaction)
       logger.info("マイニングによるトランザクションが追加されました")
       return true
     }
+
     if (this.verifyTransactionSignature(
         senderPublicKey = senderPublicKey!!,
         hexSignature = hexSignature!!,
         transaction = transaction)
     ) {
+      if (this.calculateTotalAmount(senderBlockChainAddress) < value) {
+        throw IllegalArgumentException("残高が足りません...")
+        return false
+      }
       transactionPool.add(transaction)
       logger.info("送金によるトランザクションが追加されました")
       return true
     }
-    logger.error("トランザクションが失敗しました...")
-    return false
+
+    throw IllegalStateException("トランザクションが失敗しました...")
   }
 
   fun calculateTotalAmount(blockChainAddress: String): Double {
     var totalAmount = 0.0
     this.chain.forEach { block ->
       block.transactions.forEach { transaction ->
+        // KtLog.logger.info("%s : %s : %s".format(blockChainAddress, transaction.senderBlockChainAddress, transaction.recipientBlockChainAddress))
         if (blockChainAddress == transaction.recipientBlockChainAddress) {
           totalAmount += transaction.value
         }
@@ -100,6 +101,7 @@ class BlockChain(
         }
       }
     }
+    KtLog.logger.info("送信者「%s」の 所持金額合計 : %s".format(blockChainAddress, totalAmount))
     return totalAmount
   }
 
@@ -149,7 +151,7 @@ class BlockChain(
    * 各ブロックのハッシュをチェックしてブロックが適正か判断する。
    */
   fun validChain(chain: List<Block>): Boolean {
-   var preBlock = chain.first()
+    var preBlock = chain.first()
     for (i in 1 until chain.size) {
       val block = chain[i]
       if (block.previousHash != this.getBlockHash(preBlock)) {

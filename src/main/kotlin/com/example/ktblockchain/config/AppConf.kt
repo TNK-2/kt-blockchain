@@ -4,7 +4,7 @@ object AppConf {
   const val MINING_DIFFICULTY = 3
   const val MESSAGE_DIGEST_ALGO = "SHA-256"
   const val MINING_SENDER = "THE BLOCKCHAIN"
-  const val MINING_REWARD = 1.0
+  const val MINING_REWARD = 10.0
   const val SIGNATURE_ALGO = "SHA256withECDSA"
   const val PORT = 8080
   const val BLOCKCHAIN_SERVER_URL = "http://192.168.20.2:8080"
@@ -16,4 +16,5 @@ object AppConf {
   val BLOCKCHAIN_PORT_RANGE = 8080..8080
   val NEIGHBOURS_IP_RANGE = -1..1
   const val BLOCKCHAIN_NEIGHBOURS_SYNC_TIME_SEC = 20000
+  const val BLOCKCHAIN_MINING_TIME_SEC = 20000
 }
